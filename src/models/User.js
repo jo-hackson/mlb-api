@@ -17,9 +17,12 @@ schema.methods.isValidPassword = function isValidPassword(password) {
 // first parameter (email) is public data
 // second parameter is secret key for encryption
 schema.methods.generateJWT = function generateJWT() {
-	return jwt.sign({
-		email: this.email
-	}, process.env.JWT_SECRET)
+	return jwt.sign(
+		{
+			email: this.email
+		}, 
+		process.env.JWT_SECRET
+	);
 };
 
 // object to pass down to client
@@ -27,7 +30,8 @@ schema.methods.toAuthJSON = function toAuthJSON() {
 	return {
 		email: this.email,
 		token: this.generateJWT()
-	}
+	};
 };
+
 
 export default mongoose.model('User', schema);
