@@ -5,8 +5,8 @@ import parseErrors from '../utils/parseErrors';
 const router = express.Router();
 
 router.post('/', (req,res) => {
-	const { email, password } = req.body.user;
-	const user = new User({ email });
+	const { email, password, lastName, gender } = req.body.user;
+	const user = new User({ email, lastName, gender });
 	user.setPassword(password);
 	user.setConfirmationToken();
 	user

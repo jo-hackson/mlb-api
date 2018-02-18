@@ -10,11 +10,14 @@ const schema = new mongoose.Schema(
 		lastName: { type: String, required: true },
 		gender: { type: String, required: true },
 		confirmed: { type: Boolean, default: false },
-		confirmationToken: { type: String, default: '' }
+		confirmationToken: { type: String, default: '' },
+		children: { type: mongoose.Schema.Types.ObjectId, ref: 'Child' }
 	}, 
+
 	{ timestamps: true }
 );
 
+// will return bool
 schema.methods.isValidPassword = function isValidPassword(password) {
 	return bcrypt.compareSync(password, this.passwordHash);
 };
@@ -23,10 +26,12 @@ schema.methods.setConfirmationToken = function setConfirmationToken() {
 	this.confirmationToken = this.generateJWT();
 };
 
+// called when user signs up
 schema.methods.setPassword = function setPassword(password) {
 	this.passwordHash = bcrypt.hashSync(password, 10);
 };
 
+// sign() create and encrypt web token
 // first parameter (email) is public data
 // second parameter is secret key for encryption
 schema.methods.generateJWT = function generateJWT() {
@@ -39,9 +44,11 @@ schema.methods.generateJWT = function generateJWT() {
 };
 
 // object to pass down to client
+// information available to client
 schema.methods.toAuthJSON = function toAuthJSON() {
 	return {
-		email: this.email,
+		gender: this.gender,
+		lastName: this.lastName,
 		confirmed: this.confirmed,
 		token: this.generateJWT()
 	};
